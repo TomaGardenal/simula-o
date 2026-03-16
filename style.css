@@ -1,0 +1,51 @@
+/* Custom Scrollbar for dark theme */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937; /* gray-800 */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4b5563; /* gray-600 */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; /* gray-500 */
+}
+
+/* Alert Flashing Animation */
+@keyframes flash-red {
+    0%, 100% {
+        background-color: rgba(239, 68, 68, 0.1); /* red-500 */
+        border-color: rgba(239, 68, 68, 0.5);
+    }
+    50% {
+        background-color: rgba(239, 68, 68, 0.3);
+        border-color: rgba(239, 68, 68, 1);
+    }
+}
+
+.alert-card {
+    animation: flash-red 2s infinite;
+}
+
+/* Fade in for dynamic elements */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glassmorphism card for overlay effects if needed */
+.glass-panel {
+    background: rgba(31, 41, 55, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}

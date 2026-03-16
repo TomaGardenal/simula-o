@@ -1,0 +1,111 @@
+<!DOCTYPE literal>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indústria 4.0 - Central de Monitoramento</title>
+    <!-- Tailwind CSS (via CDN para facilitar) -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-gray-200">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-800 shadow-lg flex flex-col justify-between hidden md:flex">
+            <div>
+                <div class="p-6 border-b border-gray-700">
+                    <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-green-400">
+                        <i class="fa-solid fa-industry"></i> Industry 4.0
+                    </h2>
+                </div>
+                <nav class="p-4 space-y-2">
+                    <a href="#" class="block py-2 px-4 bg-gray-700 rounded text-white bg-blue-600 shadow"><i class="fa-solid fa-chart-line mr-2"></i> Dashboard BI</a>
+                    <a href="#machines-section" class="block py-2 px-4 hover:bg-gray-700 rounded transition"><i class="fa-solid fa-cogs mr-2"></i> Máquinas</a>
+                    <a href="#alerts-section" class="block py-2 px-4 hover:bg-gray-700 rounded transition"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Alertas</a>
+                </nav>
+            </div>
+            <div class="p-4 border-t border-gray-700 text-center text-sm text-gray-400">
+                <i class="fa-solid fa-microchip"></i> Simulação Client-Side<br>Edge Computing (IoT)
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-gray-800 p-4 shadow-md flex justify-between items-center sm:hidden">
+                <h2 class="text-xl font-bold text-blue-400"><i class="fa-solid fa-industry"></i> Industry 4.0</h2>
+            </header>
+
+            <div class="p-6 space-y-6">
+                <!-- KPIs Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-green-500 hover:-translate-y-1 transition transform duration-300">
+                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Total Máquinas</h3>
+                        <p class="text-3xl font-bold mt-2" id="kpi-machines">0</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-yellow-500 hover:-translate-y-1 transition transform duration-300">
+                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Máquinas em Alerta</h3>
+                        <p class="text-3xl font-bold mt-2 text-yellow-500" id="kpi-alerts">0</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-blue-500 hover:-translate-y-1 transition transform duration-300">
+                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Custo Prev. Manutenção</h3>
+                        <p class="text-3xl font-bold mt-2 text-blue-400" id="kpi-prev-cost">R$ 0,00</p>
+                        <p class="text-xs text-gray-500 mt-1">Cenário Preventiva (4 Ciclos)</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-red-500 hover:-translate-y-1 transition transform duration-300">
+                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Custo Est. Falhas</h3>
+                        <p class="text-3xl font-bold mt-2 text-red-500" id="kpi-corr-cost">R$ 0,00</p>
+                        <p class="text-xs text-gray-500 mt-1">Acumulado em paradas não programadas</p>
+                    </div>
+                </div>
+
+                <!-- Charts Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Stream de dados da vibração -->
+                    <div class="col-span-2 bg-gray-800 p-4 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2"><i class="fa-solid fa-wave-square text-green-400"></i> Stream IoT - Vibração (Real-time)</h3>
+                        <div class="h-64 relative">
+                            <canvas id="vibrationChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Últimos Alertas -->
+                    <div class="col-span-1 bg-gray-800 p-4 rounded-lg shadow-md overflow-hidden flex flex-col" id="alerts-section">
+                        <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2"><i class="fa-solid fa-bell text-red-400"></i> Últimos Alertas</h3>
+                        <div class="overflow-y-auto flex-1 pr-2" id="alerts-container">
+                            <!-- Alertas renderizados pelo JS -->
+                            <p class="text-gray-500 text-sm italic">Nenhum alerta recente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Machines Cards -->
+                <div id="machines-section" class="bg-gray-800 p-4 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4 border-b border-gray-700 pb-2"><i class="fa-solid fa-microchip text-blue-400"></i> Status das Máquinas</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="machines-container">
+                        <!-- Máquinas renderizadas pelo JS -->
+                        <div class="animate-pulse flex space-x-4">
+                            <div class="flex-1 space-y-4 py-1">
+                              <div class="h-4 bg-gray-600 rounded w-3/4"></div>
+                              <div class="space-y-2">
+                                <div class="h-4 bg-gray-600 rounded"></div>
+                                <div class="h-4 bg-gray-600 rounded w-5/6"></div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <p class="text-gray-500 text-xs">Simulador em Ambiente de Big Data - Execução 100% Client-Side</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
