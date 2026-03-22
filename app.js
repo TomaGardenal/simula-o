@@ -25,6 +25,17 @@ let machinesList = [
     { id: 20, name: "Compressor principal - 05", status: "Normal", vibration_limit: 5.9, preventive_cost: 1180, corrective_cost: 5900 }
 ];
 
+const machineBrands = [
+    "Sucata Recondicionada",
+    "Marca Genérica (Chinesa)",
+    "Nacional de Entrada",
+    "Nacional Premium",
+    "Importada Intermediária",
+    "Alemã Standard",
+    "Alemã Premium (Siemens/Bosch)",
+    "Padrão NASA / Indústria 5.0"
+];
+
 let alertsData = [];
 let accumulated_accident_cost = 0; // Total pago em acidentes
 let total_revenue = 0; // Faturamento
@@ -144,10 +155,16 @@ window.resolveMachine = function (machineId) {
 window.upgradeMachine = function (machineId) {
     const machine = machinesList.find(m => m.id === machineId);
     if (machine && machine.status !== "Acidente") {
-        const upgradeCost = machine.preventive_cost * 2.5 * (machine.level || 1);
+        const lvl = machine.level || 0;
+        if (lvl >= machineBrands.length - 1) {
+            alert("Venda recusada: Máquina já está no nível máximo tecnológico!");
+            return;
+        }
+
+        const upgradeCost = machine.preventive_cost * 2.5 * (lvl + 1);
 
         machine.vibration_limit = parseFloat((machine.vibration_limit * 1.15).toFixed(2));
-        machine.level = (machine.level || 1) + 1;
+        machine.level = lvl + 1;
 
         // Aumenta os custos de manutenção (e consequentemente os lucros na simulação) e atualiza o risco do acidente
         machine.preventive_cost = Math.floor(machine.preventive_cost * 1.25);
@@ -161,7 +178,7 @@ window.upgradeMachine = function (machineId) {
             machine_id: machine.id,
             timestamp: new Date(),
             type: "upgrade",
-            message: `[UPGRADE] ${machine.name} aprimorada para Nível ${machine.level}. Lucros e custos aumentados.`,
+            message: `[UPGRADE] ${machine.name} melhorada para a marca/modelo: ${machineBrands[machine.level]}. Lucros e custos aumentados.`,
             resolved: true
         });
 
@@ -234,9 +251,19 @@ function updateMachines() {
             btnFix = `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-gray-600 hover:bg-gray-500 text-white p-2 rounded text-sm transition"><i class="fa-solid fa-clipboard-check"></i> Manutenção Prev. (+${formatMoney(m.preventive_cost)})</button>`;
         }
 
-        const lvl = m.level || 1;
-        const upgradeCost = m.preventive_cost * 2.5 * lvl;
-        const btnUpgrade = !isAccident ? `<button onclick="upgradeMachine(${m.id})" class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded text-sm transition font-bold"><i class="fa-solid fa-arrow-up-right-dots"></i> Upgrade (Nível ${lvl + 1}) / (-${formatMoney(upgradeCost)})</button>` : '';
+        const lvl = m.level || 0;
+        const currentBrand = machineBrands[lvl] || machineBrands[machineBrands.length - 1];
+        
+        let btnUpgrade = "";
+        if (!isAccident) {
+            if (lvl < machineBrands.length - 1) {
+                const nextBrand = machineBrands[lvl + 1];
+                const upgradeCost = m.preventive_cost * 2.5 * (lvl + 1);
+                btnUpgrade = `<button onclick="upgradeMachine(${m.id})" class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded text-sm transition font-bold shadow-md"><i class="fa-solid fa-arrow-up-right-dots"></i> Upgrade p/ ${nextBrand} (-${formatMoney(upgradeCost)})</button>`;
+            } else {
+                btnUpgrade = `<button disabled class="mt-2 w-full bg-gray-600 text-gray-400 p-2 rounded text-sm font-bold cursor-not-allowed opacity-75"><i class="fa-solid fa-check-double"></i> Tecnologia Máxima Alcançada</button>`;
+            }
+        }
 
         const html = `
             <div class="${mainBg} p-4 rounded-lg border border-gray-600 border-t-4 ${borderColor} relative shadow-lg">
@@ -245,7 +272,8 @@ function updateMachines() {
                     ${statusBadge}
                 </div>
                 <div class="text-sm text-gray-400 mt-2 space-y-1">
-                    <p><i class="fa-solid fa-wave-square"></i> Limite Vibração: <span class="text-gray-200">${m.vibration_limit.toFixed(2)} mm/s</span> <span class="bg-indigo-900 text-indigo-300 text-[10px] px-1 rounded ml-1 font-bold">NVL ${lvl}</span></p>
+                    <p><i class="fa-solid fa-industry"></i> Marca/Modelo: <span class="text-indigo-300 font-bold">${currentBrand}</span></p>
+                    <p><i class="fa-solid fa-wave-square"></i> Limite Vibração: <span class="text-gray-200">${m.vibration_limit.toFixed(2)} mm/s</span></p>
                     <p><i class="fa-solid fa-shield-halved"></i> Preventiva: <span class="text-blue-300">${formatMoney(m.preventive_cost)}</span></p>
                     <p><i class="fa-solid fa-fire"></i> Falha (Corretiva): <span class="text-red-300">${formatMoney(m.corrective_cost)}</span></p>
                     ${isAccident ? `<p class="mt-1 pt-1 border-t border-purple-800"><i class="fa-solid fa-notes-medical text-purple-400"></i> Custo Hospitalar/Ind.: <span class="text-purple-300 font-bold">${formatMoney(m.accident_cost)}</span></p>` : ''}
