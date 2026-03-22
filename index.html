@@ -41,30 +41,44 @@
             </header>
 
             <div class="p-6 space-y-6">
+                <!-- Financial Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-green-500 hover:-translate-y-1 transition transform duration-300 bg-gradient-to-r from-gray-800 to-green-900 border-opacity-50">
+                        <h3 class="text-green-200 text-sm font-bold uppercase"><i class="fa-solid fa-money-bill-trend-up"></i> Faturamento (PIB)</h3>
+                        <p class="text-3xl font-bold mt-2 text-green-400" id="kpi-revenue">R$ 0,00</p>
+                        <p class="text-xs text-gray-400 mt-1">Riqueza gerada pela operação</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-red-500 hover:-translate-y-1 transition transform duration-300 bg-gradient-to-r from-gray-800 to-red-900 border-opacity-50">
+                        <h3 class="text-red-200 text-sm font-bold uppercase"><i class="fa-solid fa-money-bill-transfer"></i> Despesas Totais</h3>
+                        <p class="text-3xl font-bold mt-2 text-red-400" id="kpi-expenses">R$ 0,00</p>
+                        <p class="text-xs text-gray-400 mt-1">Manutenções, falhas e indenizações</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-blue-500 hover:-translate-y-1 transition transform duration-300 bg-gradient-to-r from-gray-800 to-blue-900 border-opacity-50">
+                        <h3 class="text-blue-200 text-sm font-bold uppercase"><i class="fa-solid fa-sack-dollar"></i> Lucro Líquido</h3>
+                        <p class="text-3xl font-bold mt-2 text-blue-400" id="kpi-profit">R$ 0,00</p>
+                        <p class="text-xs text-gray-400 mt-1">Faturamento - Despesas</p>
+                    </div>
+                </div>
+
                 <!-- KPIs Row -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-green-500 hover:-translate-y-1 transition transform duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-gray-400">
                         <h3 class="text-gray-400 text-sm font-semibold uppercase">Total Máquinas</h3>
                         <p class="text-3xl font-bold mt-2" id="kpi-machines">0</p>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-yellow-500 hover:-translate-y-1 transition transform duration-300">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-yellow-500">
                         <h3 class="text-gray-400 text-sm font-semibold uppercase">Máquinas em Alerta</h3>
                         <p class="text-3xl font-bold mt-2 text-yellow-500" id="kpi-alerts">0</p>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-blue-500 hover:-translate-y-1 transition transform duration-300">
-                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Custo Prev. Manutenção</h3>
-                        <p class="text-3xl font-bold mt-2 text-blue-400" id="kpi-prev-cost">R$ 0,00</p>
-                        <p class="text-xs text-gray-500 mt-1">Cenário Preventiva (4 Ciclos)</p>
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-purple-500">
+                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Custo Hospitalar/Acidente</h3>
+                        <p class="text-3xl font-bold mt-2 text-purple-500" id="kpi-acc-cost">R$ 0,00</p>
+                        <p class="text-xs text-gray-500 mt-1">Impacto direto dos acidentes</p>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-red-500 hover:-translate-y-1 transition transform duration-300">
+                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-red-500">
                         <h3 class="text-gray-400 text-sm font-semibold uppercase">Custo Est. Falhas</h3>
                         <p class="text-3xl font-bold mt-2 text-red-500" id="kpi-corr-cost">R$ 0,00</p>
-                        <p class="text-xs text-gray-500 mt-1">Acumulado em paradas não programadas</p>
-                    </div>
-                    <div class="bg-gray-800 p-4 rounded-lg shadow-md border-l-4 border-purple-500 hover:-translate-y-1 transition transform duration-300">
-                        <h3 class="text-gray-400 text-sm font-semibold uppercase">Custos Hospitalares</h3>
-                        <p class="text-3xl font-bold mt-2 text-purple-500" id="kpi-acc-cost">R$ 0,00</p>
-                        <p class="text-xs text-gray-500 mt-1">Tratamentos, reparos graves e indenizações</p>
+                        <p class="text-xs text-gray-500 mt-1">Prejuízo com as máquinas paradas</p>
                     </div>
                 </div>
 

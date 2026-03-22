@@ -39,6 +39,8 @@ let machinesList = [
 
 let alertsData = [];
 let accumulated_accident_cost = 0; // Total pago em acidentes
+let total_revenue = 0; // Faturamento
+let total_expenses = 0; // Despesas
 // Histórico de leituras para o gráfico: { machineId: [ {timestamp, vibration, temp} ] }
 let readingsHistory = {};
 machinesList.forEach(m => {
@@ -68,6 +70,14 @@ function simulateIoTStream() {
         let base_vibration = machine.vibration_limit * 0.6;
         let vibration = base_vibration + (Math.random() * 2.5 - 1.0); // Ruído
         let temp = 40.0 + Math.random() * 25.0;
+
+        // Finanças: Faturamento por ciclo baseado no status
+        if (machine.status === "Normal") {
+            total_revenue += machine.preventive_cost * 0.15; // Operação normal = ganho bom
+        } else if (machine.status === "Alerta") {
+            total_revenue += machine.preventive_cost * 0.05; // Operação em alerta = ganho reduzido
+        }
+        // Se Acidente = 0 ganho (máquina parada)
 
         // 5% de chance de gerar uma anomalia (vibração perigosa) se já não estiver em alerta
         if (Math.random() < 0.05 && machine.status === "Normal") {
@@ -125,6 +135,11 @@ window.resolveMachine = function(machineId) {
     if(machine) {
         if(machine.status === "Acidente") {
             accumulated_accident_cost += machine.accident_cost;
+            total_expenses += machine.accident_cost;
+        } else if (machine.status === "Alerta") {
+            total_expenses += machine.corrective_cost;
+        } else if (machine.status === "Normal") {
+            total_expenses += machine.preventive_cost;
         }
         machine.status = "Normal";
         // Marca alertas daquela maquina como resolvidos
@@ -143,9 +158,6 @@ function updateStats() {
     let machines_in_alert = machinesList.filter(m => m.status === "Alerta" || m.status === "Acidente").length;
     let total_alerts = alertsData.length;
     
-    // Custo Preventiva (Cenário: Fazer preventiva em todo mundo 4 vezes ao ano)
-    let prev_cost = machinesList.reduce((acc, m) => acc + m.preventive_cost, 0) * 4;
-    
     // Custo Falhas (Cenário: Quantos alertas de quebra nós tivemos * custo corretivo da maquina)
     let corr_cost = alertsData.filter(a => a.type !== "acidente" && (!a.resolved || a.resolved)).reduce((acc, a) => {
         const m = machinesList.find(x => x.id === a.machine_id);
@@ -159,11 +171,24 @@ function updateStats() {
 
     document.getElementById("kpi-machines").innerText = machinesList.length;
     document.getElementById("kpi-alerts").innerText = machines_in_alert;
-    document.getElementById("kpi-prev-cost").innerText = formatMoney(prev_cost);
     document.getElementById("kpi-corr-cost").innerText = formatMoney(corr_cost);
     
     const accCostEl = document.getElementById("kpi-acc-cost");
     if(accCostEl) accCostEl.innerText = formatMoney(acc_cost);
+
+    // Finanças
+    let net_profit = total_revenue - total_expenses;
+    document.getElementById("kpi-revenue").innerText = formatMoney(total_revenue);
+    document.getElementById("kpi-expenses").innerText = formatMoney(total_expenses);
+    document.getElementById("kpi-profit").innerText = formatMoney(net_profit);
+    
+    // Colorize profit correctly
+    const profitEl = document.getElementById("kpi-profit");
+    if (net_profit < 0) {
+        profitEl.className = "text-3xl font-bold mt-2 text-red-400";
+    } else {
+        profitEl.className = "text-3xl font-bold mt-2 text-blue-400";
+    }
 }
 
 function updateMachines() {
