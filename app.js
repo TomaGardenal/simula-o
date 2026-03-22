@@ -52,7 +52,7 @@ function formatTime(dateObj) {
 // --- MÓDULO SIMULADOR IOT & LÓGICA DE NEGÓCIO (Anteriormente Backend) ---
 function simulateIoTStream() {
     const now = new Date();
-    
+
     machinesList.forEach(machine => {
         // Gerador de vibração normal: base (60% do limite) +- ruído
         let base_vibration = machine.vibration_limit * 0.6;
@@ -61,15 +61,15 @@ function simulateIoTStream() {
 
         // Finanças: Faturamento por ciclo baseado no status
         if (machine.status === "Normal") {
-            total_revenue += machine.preventive_cost * 0.40; // Operação normal = ganho muito bom (Aumentado)
+            total_revenue += machine.preventive_cost * 0.60; // Operação normal = ganho muito bom (Aumentado)
         } else if (machine.status === "Alerta") {
-            total_revenue += machine.preventive_cost * 0.15; // Operação em alerta = ganho reduzido (Aumentado)
+            total_revenue += machine.preventive_cost * 0.25; // Operação em alerta = ganho reduzido (Aumentado)
         }
         // Se Acidente = 0 ganho (máquina parada)
 
         // 5% de chance de gerar uma anomalia (vibração perigosa) se já não estiver em alerta
         if (Math.random() < 0.05 && machine.status === "Normal") {
-            vibration = machine.vibration_limit + (Math.random() * 2.5 + 0.5); 
+            vibration = machine.vibration_limit + (Math.random() * 2.5 + 0.5);
             temp = 60.0 + Math.random() * 35.0; // temperatura sobe
         }
 
@@ -109,7 +109,7 @@ function simulateIoTStream() {
                     resolved: false
                 });
             }
-        } 
+        }
         // Se a vibração voltou sozinho pro normal por 3 leituras seguidas não resolvemos o alerta, a manutenção que tem que resolver.
     });
 
@@ -118,10 +118,10 @@ function simulateIoTStream() {
 }
 
 // Resolve problemas da máquina (chamado pelo botão)
-window.resolveMachine = function(machineId) {
+window.resolveMachine = function (machineId) {
     const machine = machinesList.find(m => m.id === machineId);
-    if(machine) {
-        if(machine.status === "Acidente") {
+    if (machine) {
+        if (machine.status === "Acidente") {
             accumulated_accident_cost += machine.accident_cost;
             total_expenses += machine.accident_cost;
         } else if (machine.status === "Alerta") {
@@ -132,7 +132,7 @@ window.resolveMachine = function(machineId) {
         machine.status = "Normal";
         // Marca alertas daquela maquina como resolvidos
         alertsData.forEach(a => {
-            if(a.machine_id === machine.id && !a.resolved) {
+            if (a.machine_id === machine.id && !a.resolved) {
                 a.resolved = true;
             }
         });
@@ -141,21 +141,21 @@ window.resolveMachine = function(machineId) {
 }
 
 // Melhorar a máquina para suportar mais vibração
-window.upgradeMachine = function(machineId) {
+window.upgradeMachine = function (machineId) {
     const machine = machinesList.find(m => m.id === machineId);
-    if(machine && machine.status !== "Acidente") {
+    if (machine && machine.status !== "Acidente") {
         const upgradeCost = machine.preventive_cost * 2.5 * (machine.level || 1);
-        
+
         machine.vibration_limit = parseFloat((machine.vibration_limit * 1.15).toFixed(2));
         machine.level = (machine.level || 1) + 1;
-        
+
         // Aumenta os custos de manutenção (e consequentemente os lucros na simulação) e atualiza o risco do acidente
         machine.preventive_cost = Math.floor(machine.preventive_cost * 1.25);
         machine.corrective_cost = Math.floor(machine.corrective_cost * 1.30);
         machine.accident_cost = machine.corrective_cost * (Math.floor(Math.random() * 8) + 8);
-        
+
         total_expenses += upgradeCost;
-        
+
         alertsData.unshift({
             id: Date.now() + Math.random(),
             machine_id: machine.id,
@@ -164,7 +164,7 @@ window.upgradeMachine = function(machineId) {
             message: `[UPGRADE] ${machine.name} aprimorada para Nível ${machine.level}. Lucros e custos aumentados.`,
             resolved: true
         });
-        
+
         refreshUI();
     }
 }
@@ -174,7 +174,7 @@ window.upgradeMachine = function(machineId) {
 function updateStats() {
     let machines_in_alert = machinesList.filter(m => m.status === "Alerta" || m.status === "Acidente").length;
     let total_alerts = alertsData.length;
-    
+
     // Custo Falhas (Cenário: Quantos alertas de quebra nós tivemos * custo corretivo da maquina)
     let corr_cost = alertsData.filter(a => a.type !== "acidente" && (!a.resolved || a.resolved)).reduce((acc, a) => {
         const m = machinesList.find(x => x.id === a.machine_id);
@@ -189,16 +189,16 @@ function updateStats() {
     document.getElementById("kpi-machines").innerText = machinesList.length;
     document.getElementById("kpi-alerts").innerText = machines_in_alert;
     document.getElementById("kpi-corr-cost").innerText = formatMoney(corr_cost);
-    
+
     const accCostEl = document.getElementById("kpi-acc-cost");
-    if(accCostEl) accCostEl.innerText = formatMoney(acc_cost);
+    if (accCostEl) accCostEl.innerText = formatMoney(acc_cost);
 
     // Finanças
     let net_profit = total_revenue - total_expenses;
     document.getElementById("kpi-revenue").innerText = formatMoney(total_revenue);
     document.getElementById("kpi-expenses").innerText = formatMoney(total_expenses);
     document.getElementById("kpi-profit").innerText = formatMoney(net_profit);
-    
+
     // Colorize profit correctly
     const profitEl = document.getElementById("kpi-profit");
     if (net_profit < 0) {
@@ -219,7 +219,7 @@ function updateMachines() {
         let statusBadge = `<span class="px-2 py-1 bg-green-900 text-green-300 text-xs rounded-full font-bold">NORMAL</span>`;
         let mainBg = "bg-gray-700";
         let btnFix = "";
-        
+
         if (isAccident) {
             borderColor = "border-purple-500";
             statusBadge = `<span class="px-2 py-1 bg-purple-900 text-purple-300 text-xs rounded-full font-bold animate-pulse"><i class="fa-solid fa-skull-crossbones"></i> ACIDENTE GRAVE</span>`;
@@ -236,7 +236,7 @@ function updateMachines() {
 
         const lvl = m.level || 1;
         const upgradeCost = m.preventive_cost * 2.5 * lvl;
-        const btnUpgrade = !isAccident ? `<button onclick="upgradeMachine(${m.id})" class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded text-sm transition font-bold"><i class="fa-solid fa-arrow-up-right-dots"></i> Upgrade (Nível ${lvl+1}) / (-${formatMoney(upgradeCost)})</button>` : '';
+        const btnUpgrade = !isAccident ? `<button onclick="upgradeMachine(${m.id})" class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded text-sm transition font-bold"><i class="fa-solid fa-arrow-up-right-dots"></i> Upgrade (Nível ${lvl + 1}) / (-${formatMoney(upgradeCost)})</button>` : '';
 
         const html = `
             <div class="${mainBg} p-4 rounded-lg border border-gray-600 border-t-4 ${borderColor} relative shadow-lg">
@@ -314,14 +314,14 @@ function initChart() {
 }
 
 function updateChartData() {
-    if(machinesList.length === 0 || !vibChart) return;
+    if (machinesList.length === 0 || !vibChart) return;
 
     let newDatasets = [];
     let commonLabels = [];
 
     // Tentar pegar os labels da primeira maquina como ref (todas batem na msm hora no simulador local)
     const firstId = machinesList[0]?.id;
-    if(firstId && readingsHistory[firstId] && readingsHistory[firstId].length > 0) {
+    if (firstId && readingsHistory[firstId] && readingsHistory[firstId].length > 0) {
         commonLabels = readingsHistory[firstId].map(r => formatTime(r.timestamp));
     }
 
@@ -361,9 +361,9 @@ function gameLoop() {
 function bootstrap() {
     // Inicializa Chart
     initChart();
-    
+
     // Simula primeiros pontos rápidos
-    for(let i=0; i<5; i++){
+    for (let i = 0; i < 5; i++) {
         simulateIoTStream();
     }
     refreshUI();
