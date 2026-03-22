@@ -38,9 +38,11 @@ let machinesList = [
 ];
 
 let alertsData = [];
+let accumulated_accident_cost = 0; // Total pago em acidentes
 // Histórico de leituras para o gráfico: { machineId: [ {timestamp, vibration, temp} ] }
 let readingsHistory = {};
 machinesList.forEach(m => {
+    m.accident_cost = m.corrective_cost * (Math.floor(Math.random() * 8) + 8); // Custo do acidente
     readingsHistory[m.id] = [];
 });
 
@@ -87,14 +89,25 @@ function simulateIoTStream() {
 
         // 2. Lógica de Detecção de Anomalias (Regra de Negócio)
         if (vibration > machine.vibration_limit) { // Passou do limite
-            if (machine.status !== "Alerta" && machine.status !== "Manutenção") {
+            if (machine.status === "Normal") {
                 machine.status = "Alerta";
                 // Gera alerta
                 alertsData.unshift({
                     id: Date.now() + Math.random(),
                     machine_id: machine.id,
                     timestamp: now,
+                    type: "alerta",
                     message: `Risco de falha na ${machine.name} – Vibração anormal detectada (${vibration.toFixed(1)} mm/s). Manutenção recomendada.`,
+                    resolved: false
+                });
+            } else if (machine.status === "Alerta" && Math.random() < 0.05) {
+                machine.status = "Acidente";
+                alertsData.unshift({
+                    id: Date.now() + Math.random(),
+                    machine_id: machine.id,
+                    timestamp: now,
+                    type: "acidente",
+                    message: `[ACIDENTE GRAVE] A máquina ${machine.name} colapsou! Operador ferido, ambulância a caminho. (${vibration.toFixed(1)} mm/s).`,
                     resolved: false
                 });
             }
@@ -110,6 +123,9 @@ function simulateIoTStream() {
 window.resolveMachine = function(machineId) {
     const machine = machinesList.find(m => m.id === machineId);
     if(machine) {
+        if(machine.status === "Acidente") {
+            accumulated_accident_cost += machine.accident_cost;
+        }
         machine.status = "Normal";
         // Marca alertas daquela maquina como resolvidos
         alertsData.forEach(a => {
@@ -124,22 +140,30 @@ window.resolveMachine = function(machineId) {
 // --- MÓDULO DE INTERFACE (Dashboard) ---
 
 function updateStats() {
-    let machines_in_alert = machinesList.filter(m => m.status === "Alerta").length;
+    let machines_in_alert = machinesList.filter(m => m.status === "Alerta" || m.status === "Acidente").length;
     let total_alerts = alertsData.length;
     
     // Custo Preventiva (Cenário: Fazer preventiva em todo mundo 4 vezes ao ano)
     let prev_cost = machinesList.reduce((acc, m) => acc + m.preventive_cost, 0) * 4;
     
     // Custo Falhas (Cenário: Quantos alertas de quebra nós tivemos * custo corretivo da maquina)
-    let corr_cost = alertsData.filter(a => !a.resolved || a.resolved).reduce((acc, a) => {
+    let corr_cost = alertsData.filter(a => a.type !== "acidente" && (!a.resolved || a.resolved)).reduce((acc, a) => {
         const m = machinesList.find(x => x.id === a.machine_id);
         return acc + (m ? m.corrective_cost : 0);
     }, 0);
+
+    let acc_cost = alertsData.filter(a => a.type === "acidente" && !a.resolved).reduce((acc, a) => {
+        const m = machinesList.find(x => x.id === a.machine_id);
+        return acc + (m ? m.accident_cost : 0);
+    }, 0) + accumulated_accident_cost;
 
     document.getElementById("kpi-machines").innerText = machinesList.length;
     document.getElementById("kpi-alerts").innerText = machines_in_alert;
     document.getElementById("kpi-prev-cost").innerText = formatMoney(prev_cost);
     document.getElementById("kpi-corr-cost").innerText = formatMoney(corr_cost);
+    
+    const accCostEl = document.getElementById("kpi-acc-cost");
+    if(accCostEl) accCostEl.innerText = formatMoney(acc_cost);
 }
 
 function updateMachines() {
@@ -148,19 +172,25 @@ function updateMachines() {
 
     machinesList.forEach(m => {
         const isAlert = m.status === "Alerta";
+        const isAccident = m.status === "Acidente";
         let borderColor = "border-green-500";
         let statusBadge = `<span class="px-2 py-1 bg-green-900 text-green-300 text-xs rounded-full font-bold">NORMAL</span>`;
         let mainBg = "bg-gray-700";
+        let btnFix = "";
         
-        if (isAlert) {
+        if (isAccident) {
+            borderColor = "border-purple-500";
+            statusBadge = `<span class="px-2 py-1 bg-purple-900 text-purple-300 text-xs rounded-full font-bold animate-pulse"><i class="fa-solid fa-skull-crossbones"></i> ACIDENTE GRAVE</span>`;
+            mainBg = "bg-purple-900 bg-opacity-30 alert-card";
+            btnFix = `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-purple-600 hover:bg-purple-500 text-white p-2 rounded text-sm transition font-bold shadow-[0_0_10px_rgba(168,85,247,0.5)]"><i class="fa-solid fa-truck-medical"></i> Socorrer e Indenizar (+${formatMoney(m.accident_cost)})</button>`;
+        } else if (isAlert) {
             borderColor = "border-red-500";
             statusBadge = `<span class="px-2 py-1 bg-red-900 text-red-300 text-xs rounded-full font-bold animate-pulse">ALERTA / FALHA EMININENTE</span>`;
             mainBg = "alert-card";
+            btnFix = `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-sm transition font-bold"><i class="fa-solid fa-screwdriver-wrench"></i> Realizar Manutenção (+${formatMoney(m.corrective_cost)})</button>`;
+        } else {
+            btnFix = `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-gray-600 hover:bg-gray-500 text-white p-2 rounded text-sm transition"><i class="fa-solid fa-clipboard-check"></i> Manutenção Prev. (+${formatMoney(m.preventive_cost)})</button>`;
         }
-
-        const btnFix = isAlert ? 
-            `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-sm transition font-bold"><i class="fa-solid fa-screwdriver-wrench"></i> Realizar Manutenção (+${formatMoney(m.corrective_cost)})</button>` : 
-            `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-gray-600 hover:bg-gray-500 text-white p-2 rounded text-sm transition"><i class="fa-solid fa-clipboard-check"></i> Manutenção Prev. (+${formatMoney(m.preventive_cost)})</button>`;
 
         const html = `
             <div class="${mainBg} p-4 rounded-lg border border-gray-600 border-t-4 ${borderColor} relative shadow-lg">
@@ -172,6 +202,7 @@ function updateMachines() {
                     <p><i class="fa-solid fa-wave-square"></i> Limite Vibração: <span class="text-gray-200">${m.vibration_limit} mm/s</span></p>
                     <p><i class="fa-solid fa-shield-halved"></i> Preventiva: <span class="text-blue-300">${formatMoney(m.preventive_cost)}</span></p>
                     <p><i class="fa-solid fa-fire"></i> Falha (Corretiva): <span class="text-red-300">${formatMoney(m.corrective_cost)}</span></p>
+                    ${isAccident ? `<p class="mt-1 pt-1 border-t border-purple-800"><i class="fa-solid fa-notes-medical text-purple-400"></i> Custo Hospitalar/Ind.: <span class="text-purple-300 font-bold">${formatMoney(m.accident_cost)}</span></p>` : ''}
                 </div>
                 ${btnFix}
             </div>
