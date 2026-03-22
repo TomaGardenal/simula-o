@@ -5,36 +5,24 @@ let machinesList = [
     { id: 3, name: "Torno CNC - 03", status: "Normal", vibration_limit: 8.4, preventive_cost: 1050, corrective_cost: 4900 },
     { id: 4, name: "Torno CNC - 04", status: "Normal", vibration_limit: 8.7, preventive_cost: 1100, corrective_cost: 5200 },
     { id: 5, name: "Torno CNC - 05", status: "Normal", vibration_limit: 8.3, preventive_cost: 950, corrective_cost: 4800 },
-    { id: 6, name: "Torno CNC - 06", status: "Normal", vibration_limit: 8.5, preventive_cost: 1000, corrective_cost: 5000 },
-    { id: 7, name: "Torno CNC - 07", status: "Normal", vibration_limit: 8.8, preventive_cost: 1050, corrective_cost: 5300 },
-    { id: 8, name: "Torno CNC - 08", status: "Normal", vibration_limit: 8.2, preventive_cost: 1000, corrective_cost: 4700 },
 
-    { id: 9, name: "Fresa - 01", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
-    { id: 10, name: "Fresa - 02", status: "Normal", vibration_limit: 7.1, preventive_cost: 820, corrective_cost: 4100 },
-    { id: 11, name: "Fresa - 03", status: "Normal", vibration_limit: 6.9, preventive_cost: 780, corrective_cost: 3900 },
-    { id: 12, name: "Fresa - 04", status: "Normal", vibration_limit: 7.2, preventive_cost: 850, corrective_cost: 4200 },
-    { id: 13, name: "Fresa - 05", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
-    { id: 14, name: "Fresa - 06", status: "Normal", vibration_limit: 6.8, preventive_cost: 750, corrective_cost: 3800 },
-    { id: 15, name: "Fresa - 07", status: "Normal", vibration_limit: 7.3, preventive_cost: 870, corrective_cost: 4300 },
-    { id: 16, name: "Fresa - 08", status: "Normal", vibration_limit: 6.7, preventive_cost: 720, corrective_cost: 3700 },
+    { id: 6, name: "Fresa - 01", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
+    { id: 7, name: "Fresa - 02", status: "Normal", vibration_limit: 7.1, preventive_cost: 820, corrective_cost: 4100 },
+    { id: 8, name: "Fresa - 03", status: "Normal", vibration_limit: 6.9, preventive_cost: 780, corrective_cost: 3900 },
+    { id: 9, name: "Fresa - 04", status: "Normal", vibration_limit: 7.2, preventive_cost: 850, corrective_cost: 4200 },
+    { id: 10, name: "Fresa - 05", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
 
-    { id: 17, name: "Esteira Transportadora - A", status: "Normal", vibration_limit: 10.0, preventive_cost: 500, corrective_cost: 2500 },
-    { id: 18, name: "Esteira Transportadora - B", status: "Normal", vibration_limit: 10.5, preventive_cost: 550, corrective_cost: 2700 },
-    { id: 19, name: "Esteira Transportadora - C", status: "Normal", vibration_limit: 9.5, preventive_cost: 450, corrective_cost: 2300 },
-    { id: 20, name: "Esteira Transportadora - D", status: "Normal", vibration_limit: 10.2, preventive_cost: 520, corrective_cost: 2600 },
-    { id: 21, name: "Esteira Transportadora - E", status: "Normal", vibration_limit: 9.8, preventive_cost: 480, corrective_cost: 2400 },
-    { id: 22, name: "Esteira Transportadora - F", status: "Normal", vibration_limit: 10.1, preventive_cost: 510, corrective_cost: 2550 },
-    { id: 23, name: "Esteira Transportadora - G", status: "Normal", vibration_limit: 9.9, preventive_cost: 490, corrective_cost: 2450 },
-    { id: 24, name: "Esteira Transportadora - H", status: "Normal", vibration_limit: 10.8, preventive_cost: 600, corrective_cost: 2800 },
+    { id: 11, name: "Esteira Transportadora - A", status: "Normal", vibration_limit: 10.0, preventive_cost: 500, corrective_cost: 2500 },
+    { id: 12, name: "Esteira Transportadora - B", status: "Normal", vibration_limit: 10.5, preventive_cost: 550, corrective_cost: 2700 },
+    { id: 13, name: "Esteira Transportadora - C", status: "Normal", vibration_limit: 9.5, preventive_cost: 450, corrective_cost: 2300 },
+    { id: 14, name: "Esteira Transportadora - D", status: "Normal", vibration_limit: 10.2, preventive_cost: 520, corrective_cost: 2600 },
+    { id: 15, name: "Esteira Transportadora - E", status: "Normal", vibration_limit: 9.8, preventive_cost: 480, corrective_cost: 2400 },
 
-    { id: 25, name: "Compressor principal - 01", status: "Normal", vibration_limit: 6.0, preventive_cost: 1200, corrective_cost: 6000 },
-    { id: 26, name: "Compressor principal - 02", status: "Normal", vibration_limit: 6.2, preventive_cost: 1250, corrective_cost: 6200 },
-    { id: 27, name: "Compressor principal - 03", status: "Normal", vibration_limit: 5.8, preventive_cost: 1150, corrective_cost: 5800 },
-    { id: 28, name: "Compressor principal - 04", status: "Normal", vibration_limit: 6.1, preventive_cost: 1220, corrective_cost: 6100 },
-    { id: 29, name: "Compressor principal - 05", status: "Normal", vibration_limit: 5.9, preventive_cost: 1180, corrective_cost: 5900 },
-    { id: 30, name: "Compressor principal - 06", status: "Normal", vibration_limit: 6.3, preventive_cost: 1300, corrective_cost: 6300 },
-    { id: 31, name: "Compressor principal - 07", status: "Normal", vibration_limit: 5.7, preventive_cost: 1100, corrective_cost: 5700 },
-    { id: 32, name: "Compressor principal - 08", status: "Normal", vibration_limit: 6.4, preventive_cost: 1350, corrective_cost: 6400 }
+    { id: 16, name: "Compressor principal - 01", status: "Normal", vibration_limit: 6.0, preventive_cost: 1200, corrective_cost: 6000 },
+    { id: 17, name: "Compressor principal - 02", status: "Normal", vibration_limit: 6.2, preventive_cost: 1250, corrective_cost: 6200 },
+    { id: 18, name: "Compressor principal - 03", status: "Normal", vibration_limit: 5.8, preventive_cost: 1150, corrective_cost: 5800 },
+    { id: 19, name: "Compressor principal - 04", status: "Normal", vibration_limit: 6.1, preventive_cost: 1220, corrective_cost: 6100 },
+    { id: 20, name: "Compressor principal - 05", status: "Normal", vibration_limit: 5.9, preventive_cost: 1180, corrective_cost: 5900 }
 ];
 
 let alertsData = [];
@@ -152,6 +140,30 @@ window.resolveMachine = function(machineId) {
     }
 }
 
+// Melhorar a máquina para suportar mais vibração
+window.upgradeMachine = function(machineId) {
+    const machine = machinesList.find(m => m.id === machineId);
+    if(machine && machine.status !== "Acidente") {
+        const upgradeCost = machine.preventive_cost * 2.5 * (machine.level || 1);
+        
+        machine.vibration_limit = parseFloat((machine.vibration_limit * 1.15).toFixed(2));
+        machine.level = (machine.level || 1) + 1;
+        
+        total_expenses += upgradeCost;
+        
+        alertsData.unshift({
+            id: Date.now() + Math.random(),
+            machine_id: machine.id,
+            timestamp: new Date(),
+            type: "upgrade",
+            message: `[UPGRADE] ${machine.name} aprimorada para Nível ${machine.level}. Novo Limite: ${machine.vibration_limit.toFixed(2)} mm/s.`,
+            resolved: true
+        });
+        
+        refreshUI();
+    }
+}
+
 // --- MÓDULO DE INTERFACE (Dashboard) ---
 
 function updateStats() {
@@ -217,6 +229,10 @@ function updateMachines() {
             btnFix = `<button onclick="resolveMachine(${m.id})" class="mt-3 w-full bg-gray-600 hover:bg-gray-500 text-white p-2 rounded text-sm transition"><i class="fa-solid fa-clipboard-check"></i> Manutenção Prev. (+${formatMoney(m.preventive_cost)})</button>`;
         }
 
+        const lvl = m.level || 1;
+        const upgradeCost = m.preventive_cost * 2.5 * lvl;
+        const btnUpgrade = !isAccident ? `<button onclick="upgradeMachine(${m.id})" class="mt-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white p-2 rounded text-sm transition font-bold"><i class="fa-solid fa-arrow-up-right-dots"></i> Upgrade (Nível ${lvl+1}) / (-${formatMoney(upgradeCost)})</button>` : '';
+
         const html = `
             <div class="${mainBg} p-4 rounded-lg border border-gray-600 border-t-4 ${borderColor} relative shadow-lg">
                 <div class="flex justify-between items-start mb-2">
@@ -224,12 +240,15 @@ function updateMachines() {
                     ${statusBadge}
                 </div>
                 <div class="text-sm text-gray-400 mt-2 space-y-1">
-                    <p><i class="fa-solid fa-wave-square"></i> Limite Vibração: <span class="text-gray-200">${m.vibration_limit} mm/s</span></p>
+                    <p><i class="fa-solid fa-wave-square"></i> Limite Vibração: <span class="text-gray-200">${m.vibration_limit.toFixed(2)} mm/s</span> <span class="bg-indigo-900 text-indigo-300 text-[10px] px-1 rounded ml-1 font-bold">NVL ${lvl}</span></p>
                     <p><i class="fa-solid fa-shield-halved"></i> Preventiva: <span class="text-blue-300">${formatMoney(m.preventive_cost)}</span></p>
                     <p><i class="fa-solid fa-fire"></i> Falha (Corretiva): <span class="text-red-300">${formatMoney(m.corrective_cost)}</span></p>
                     ${isAccident ? `<p class="mt-1 pt-1 border-t border-purple-800"><i class="fa-solid fa-notes-medical text-purple-400"></i> Custo Hospitalar/Ind.: <span class="text-purple-300 font-bold">${formatMoney(m.accident_cost)}</span></p>` : ''}
                 </div>
-                ${btnFix}
+                <div class="mt-3 space-y-2">
+                    ${btnFix}
+                    ${btnUpgrade}
+                </div>
             </div>
         `;
         container.innerHTML += html;
@@ -295,9 +314,10 @@ function updateChartData() {
     let newDatasets = [];
     let commonLabels = [];
 
-    // Tentar pegar os labels da maquina 1 como ref (todas batem na msm hora no simulador local)
-    if(readingsHistory[1].length > 0) {
-        commonLabels = readingsHistory[1].map(r => formatTime(r.timestamp));
+    // Tentar pegar os labels da primeira maquina como ref (todas batem na msm hora no simulador local)
+    const firstId = machinesList[0]?.id;
+    if(firstId && readingsHistory[firstId] && readingsHistory[firstId].length > 0) {
+        commonLabels = readingsHistory[firstId].map(r => formatTime(r.timestamp));
     }
 
     machinesList.forEach((m, index) => {
