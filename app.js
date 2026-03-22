@@ -74,7 +74,7 @@ function simulateIoTStream() {
         if (machine.status === "Normal") {
             total_revenue += machine.preventive_cost * 1.45; // Operação normal = ganho extremamente alto
         } else if (machine.status === "Alerta") {
-            total_revenue += machine.preventive_cost * 0.85; // Operação em alerta = ganho reduzido
+            total_revenue += machine.preventive_cost * 0.995; // Operação em alerta = ganho reduzido
         }
         // Se Acidente = 0 ganho (máquina parada)
 
