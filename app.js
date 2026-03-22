@@ -1,14 +1,48 @@
 // Estado Global da Aplicação (Simulando o Banco de Dados)
 let machinesList = [
     { id: 1, name: "Torno CNC - 01", status: "Normal", vibration_limit: 8.5, preventive_cost: 1000, corrective_cost: 5000 },
-    { id: 2, name: "Fresa - 02", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
-    { id: 3, name: "Esteira Transportadora", status: "Normal", vibration_limit: 10.0, preventive_cost: 500, corrective_cost: 2500 },
-    { id: 4, name: "Compressor principal", status: "Normal", vibration_limit: 6.0, preventive_cost: 1200, corrective_cost: 6000 }
+    { id: 2, name: "Torno CNC - 02", status: "Normal", vibration_limit: 8.6, preventive_cost: 1000, corrective_cost: 5100 },
+    { id: 3, name: "Torno CNC - 03", status: "Normal", vibration_limit: 8.4, preventive_cost: 1050, corrective_cost: 4900 },
+    { id: 4, name: "Torno CNC - 04", status: "Normal", vibration_limit: 8.7, preventive_cost: 1100, corrective_cost: 5200 },
+    { id: 5, name: "Torno CNC - 05", status: "Normal", vibration_limit: 8.3, preventive_cost: 950, corrective_cost: 4800 },
+    { id: 6, name: "Torno CNC - 06", status: "Normal", vibration_limit: 8.5, preventive_cost: 1000, corrective_cost: 5000 },
+    { id: 7, name: "Torno CNC - 07", status: "Normal", vibration_limit: 8.8, preventive_cost: 1050, corrective_cost: 5300 },
+    { id: 8, name: "Torno CNC - 08", status: "Normal", vibration_limit: 8.2, preventive_cost: 1000, corrective_cost: 4700 },
+
+    { id: 9, name: "Fresa - 01", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
+    { id: 10, name: "Fresa - 02", status: "Normal", vibration_limit: 7.1, preventive_cost: 820, corrective_cost: 4100 },
+    { id: 11, name: "Fresa - 03", status: "Normal", vibration_limit: 6.9, preventive_cost: 780, corrective_cost: 3900 },
+    { id: 12, name: "Fresa - 04", status: "Normal", vibration_limit: 7.2, preventive_cost: 850, corrective_cost: 4200 },
+    { id: 13, name: "Fresa - 05", status: "Normal", vibration_limit: 7.0, preventive_cost: 800, corrective_cost: 4000 },
+    { id: 14, name: "Fresa - 06", status: "Normal", vibration_limit: 6.8, preventive_cost: 750, corrective_cost: 3800 },
+    { id: 15, name: "Fresa - 07", status: "Normal", vibration_limit: 7.3, preventive_cost: 870, corrective_cost: 4300 },
+    { id: 16, name: "Fresa - 08", status: "Normal", vibration_limit: 6.7, preventive_cost: 720, corrective_cost: 3700 },
+
+    { id: 17, name: "Esteira Transportadora - A", status: "Normal", vibration_limit: 10.0, preventive_cost: 500, corrective_cost: 2500 },
+    { id: 18, name: "Esteira Transportadora - B", status: "Normal", vibration_limit: 10.5, preventive_cost: 550, corrective_cost: 2700 },
+    { id: 19, name: "Esteira Transportadora - C", status: "Normal", vibration_limit: 9.5, preventive_cost: 450, corrective_cost: 2300 },
+    { id: 20, name: "Esteira Transportadora - D", status: "Normal", vibration_limit: 10.2, preventive_cost: 520, corrective_cost: 2600 },
+    { id: 21, name: "Esteira Transportadora - E", status: "Normal", vibration_limit: 9.8, preventive_cost: 480, corrective_cost: 2400 },
+    { id: 22, name: "Esteira Transportadora - F", status: "Normal", vibration_limit: 10.1, preventive_cost: 510, corrective_cost: 2550 },
+    { id: 23, name: "Esteira Transportadora - G", status: "Normal", vibration_limit: 9.9, preventive_cost: 490, corrective_cost: 2450 },
+    { id: 24, name: "Esteira Transportadora - H", status: "Normal", vibration_limit: 10.8, preventive_cost: 600, corrective_cost: 2800 },
+
+    { id: 25, name: "Compressor principal - 01", status: "Normal", vibration_limit: 6.0, preventive_cost: 1200, corrective_cost: 6000 },
+    { id: 26, name: "Compressor principal - 02", status: "Normal", vibration_limit: 6.2, preventive_cost: 1250, corrective_cost: 6200 },
+    { id: 27, name: "Compressor principal - 03", status: "Normal", vibration_limit: 5.8, preventive_cost: 1150, corrective_cost: 5800 },
+    { id: 28, name: "Compressor principal - 04", status: "Normal", vibration_limit: 6.1, preventive_cost: 1220, corrective_cost: 6100 },
+    { id: 29, name: "Compressor principal - 05", status: "Normal", vibration_limit: 5.9, preventive_cost: 1180, corrective_cost: 5900 },
+    { id: 30, name: "Compressor principal - 06", status: "Normal", vibration_limit: 6.3, preventive_cost: 1300, corrective_cost: 6300 },
+    { id: 31, name: "Compressor principal - 07", status: "Normal", vibration_limit: 5.7, preventive_cost: 1100, corrective_cost: 5700 },
+    { id: 32, name: "Compressor principal - 08", status: "Normal", vibration_limit: 6.4, preventive_cost: 1350, corrective_cost: 6400 }
 ];
 
 let alertsData = [];
 // Histórico de leituras para o gráfico: { machineId: [ {timestamp, vibration, temp} ] }
-let readingsHistory = { 1: [], 2: [], 3: [], 4: [] }; 
+let readingsHistory = {};
+machinesList.forEach(m => {
+    readingsHistory[m.id] = [];
+});
 
 const maxDataPoints = 20; // Pontos máximos no gráfico por máquina
 let vibChart = null;
