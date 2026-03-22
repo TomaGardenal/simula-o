@@ -149,6 +149,11 @@ window.upgradeMachine = function(machineId) {
         machine.vibration_limit = parseFloat((machine.vibration_limit * 1.15).toFixed(2));
         machine.level = (machine.level || 1) + 1;
         
+        // Aumenta os custos de manutenção (e consequentemente os lucros na simulação) e atualiza o risco do acidente
+        machine.preventive_cost = Math.floor(machine.preventive_cost * 1.25);
+        machine.corrective_cost = Math.floor(machine.corrective_cost * 1.30);
+        machine.accident_cost = machine.corrective_cost * (Math.floor(Math.random() * 8) + 8);
+        
         total_expenses += upgradeCost;
         
         alertsData.unshift({
@@ -156,7 +161,7 @@ window.upgradeMachine = function(machineId) {
             machine_id: machine.id,
             timestamp: new Date(),
             type: "upgrade",
-            message: `[UPGRADE] ${machine.name} aprimorada para Nível ${machine.level}. Novo Limite: ${machine.vibration_limit.toFixed(2)} mm/s.`,
+            message: `[UPGRADE] ${machine.name} aprimorada para Nível ${machine.level}. Lucros e custos aumentados.`,
             resolved: true
         });
         
