@@ -61,9 +61,9 @@ function simulateIoTStream() {
 
         // Finanças: Faturamento por ciclo baseado no status
         if (machine.status === "Normal") {
-            total_revenue += machine.preventive_cost * 0.15; // Operação normal = ganho bom
+            total_revenue += machine.preventive_cost * 0.40; // Operação normal = ganho muito bom (Aumentado)
         } else if (machine.status === "Alerta") {
-            total_revenue += machine.preventive_cost * 0.05; // Operação em alerta = ganho reduzido
+            total_revenue += machine.preventive_cost * 0.15; // Operação em alerta = ganho reduzido (Aumentado)
         }
         // Se Acidente = 0 ganho (máquina parada)
 
